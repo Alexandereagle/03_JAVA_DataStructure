@@ -1,4 +1,3 @@
-import javax.management.RuntimeErrorException;
 import java.util.Scanner;
 
 public class ArrayQueue {
@@ -93,7 +92,7 @@ class ArrayQueueTest {
                     try {
                         arrayQueue.queueAddData(inputData);
                     } catch (Exception e) {
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
                     }
 
                     break;
@@ -102,7 +101,7 @@ class ArrayQueueTest {
                         int deleteData = arrayQueue.queueDeleteData();
                         System.out.println(deleteData);
                     } catch (Exception e) {
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 'h':
@@ -110,7 +109,7 @@ class ArrayQueueTest {
                         int headData = arrayQueue.queueGetHead();
                         System.out.println(headData);
                     } catch (Exception e) {
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 'p':
