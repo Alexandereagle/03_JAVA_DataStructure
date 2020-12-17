@@ -1,25 +1,27 @@
 import java.util.Scanner;
 
-public class ArrayQueue {
+public class CircleArrayQueue {
     int maxSize;
     int front;
     int rear;
     int[] queue;
 
-    // 初始化队列,
-    ArrayQueue(int maxSize) {
+    // 队列初始化
+    // 1、队首设置为 首元素
+    // 2、队尾设置为 末尾元素的后一个元素
+    CircleArrayQueue(int maxSize) {
         this.maxSize = maxSize;
-        this.front = -1;
-        this.rear = -1;
-        this.queue = new int[maxSize];
+        this.front = 0;
+        this.rear = 0;
+        this.queue = new int[maxSize + 1];
     }
 
-    // 判断队列是否已满
+    // 判断队列是否已满, (rear + maxsize - front) % maxsize == 0
     public boolean queueIsFull() {
-        return rear == maxSize - 1;
+        return (rear + 1) % maxSize == front;
     }
 
-    // 判断队列是否为空
+    // 判断队列是否为空, 当
     public boolean queueIsEmpty() {
         return front == rear;
     }
@@ -29,7 +31,9 @@ public class ArrayQueue {
         if (this.queueIsFull()) {
             throw new RuntimeException("队列已满, 无法加入队列");
         }
-        this.queue[++rear] = data;
+
+        this.queue[rear] = data;
+        rear = (rear + 1) % maxSize;
     }
 
     // 队列删除数据
@@ -37,7 +41,9 @@ public class ArrayQueue {
         if (this.queueIsEmpty()) {
             throw new RuntimeException("队列已空, 无法返回数据");
         }
-        return queue[++front];
+        int temp = queue[front];
+        front = (front + 1) % maxSize;
+        return temp;
     }
 
     // 获取队列的第一个数据
@@ -45,25 +51,27 @@ public class ArrayQueue {
         if (this.queueIsEmpty()) {
             throw new RuntimeException("队列已空，无法返回数据");
         }
-        return queue[front + 1];
+        return queue[front];
+    }
+
+    // 求出队列的有效元素个数
+    public int queueValidData() {
+        return (rear + maxSize - front) % maxSize;
     }
 
     // 显示队列的所有数据
     public void queuePrintAll() {
-        int left = this.front;
-        int right = this.rear;
-
-        while (++left <= right) {
-            System.out.print(queue[left]);
-            System.out.println(", ");
+        int validData = queueValidData();
+        for (int i = front; i <= front + validData - 1; i++) {
+            System.out.print(queue[i % maxSize] + ", ");
         }
         System.out.println();
     }
 }
 
-class ArrayQueueTest {
+class CircleArrayQueueTest {
     public static void main(String[] args) {
-        ArrayQueue arrayQueue = new ArrayQueue(3);
+        CircleArrayQueue circleArrayQueue = new CircleArrayQueue(3);
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("----------菜单-----------");
@@ -80,16 +88,16 @@ class ArrayQueueTest {
             char c = scanner.next().charAt(0);
             switch (c) {
                 case 'f':
-                    arrayQueue.queueIsFull();
+                    circleArrayQueue.queueIsFull();
                     break;
                 case 'e':
-                    arrayQueue.queueIsEmpty();
+                    circleArrayQueue.queueIsEmpty();
                     break;
                 case 'a':
                     System.out.print("请输入一个数字: ");
                     int inputData = scanner.nextInt();
                     try {
-                        arrayQueue.queueAddData(inputData);
+                        circleArrayQueue.queueAddData(inputData);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -97,7 +105,7 @@ class ArrayQueueTest {
                     break;
                 case 'd':
                     try {
-                        int deleteData = arrayQueue.queueDeleteData();
+                        int deleteData = circleArrayQueue.queueDeleteData();
                         System.out.println(deleteData);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -105,14 +113,14 @@ class ArrayQueueTest {
                     break;
                 case 'h':
                     try {
-                        int headData = arrayQueue.queueGetHead();
+                        int headData = circleArrayQueue.queueGetHead();
                         System.out.println(headData);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                     break;
                 case 'p':
-                    arrayQueue.queuePrintAll();
+                    circleArrayQueue.queuePrintAll();
                     break;
                 case 't':
                     scanner.close();
